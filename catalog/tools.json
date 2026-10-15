@@ -1,0 +1,16 @@
+{
+  "format": 1,
+  "tools": [
+    {
+      "id": "modded-exe",
+      "name": "modded.exe",
+      "description": "A game executable used by GenLauncher 1.x as the 'modded exe' option, published on p0ls3r's GitHub.",
+      "file": "modded.exe",
+      "page": "https://github.com/p0ls3r/moddedExe",
+      "download": {
+        "url": "https://raw.githubusercontent.com/p0ls3r/moddedExe/master/modded.exe",
+        "sha256": "4ea7e86baffbc94946f6e2f89f698812159b34b89876822de329af19bc28c887"
+      }
+    }
+  ]
+}
