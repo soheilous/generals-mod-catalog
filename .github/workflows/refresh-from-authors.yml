@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 22
       - name: Read the authors' manifests
-        run: node tools/import-manifests.mjs --write --prune | tee refresh.log
+        run: node tools/import-manifests.mjs --write | tee "$RUNNER_TEMP/refresh.log"   # no --prune: one slow answer must not drop a good link
       - name: The catalog must still be valid
         run: node tools/check-catalog.mjs --offline
       - uses: peter-evans/create-pull-request@v7
