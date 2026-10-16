@@ -11,10 +11,17 @@ Thank you for helping keep Generals modding easy to find. Most changes are a few
 4. Update `updated` at the top of the file.
 5. Run `node tools/check-catalog.mjs --offline` and open a pull request.
 
+### Direct downloads
+
+`"download": { "url": "https://…/Mod.zip", "via": "https://…/manifest", "size": 12345, "sha256": "…" }` makes GenLauncher offer a
+one-click install. `url` must be a plain https link that answers with the file (no login or "confirm" page, no one-time tokens),
+and `via` must be the author's own published manifest or page naming that file. `size` and `sha256` are optional. Run
+`node tools/import-manifests.mjs` to fill these in from the authors' manifests.
+
 ## Please do not
 
 - link to files hosted by someone other than the author, or to archives on file-sharing sites;
-- add download links to mods (only helper programs in `tools.json` may have one, and then with a SHA-256);
+- add a `download` to a mod unless the author published that link themselves (the `via` field names their manifest or page that says so);
 - rename an existing mod without a reason: readers match installed mods by name.
 
 ## Reporting a problem

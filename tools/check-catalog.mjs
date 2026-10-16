@@ -36,6 +36,23 @@ function checkUrlRaw(where, field, value) {
   links.get(value).push(`${where} ${field}`);
 }
 
+/** A direct download the author published (see tools/import-manifests.mjs): { url, via, size?, sha256? }. */
+function checkDownload(where, d) {
+  if (d === undefined) return;
+  if (typeof d !== "object" || d === null || Array.isArray(d)) return fail(where, "download must be an object { url, via }");
+  for (const k of Object.keys(d)) if (!["url", "via", "size", "sha256"].includes(k)) fail(where, `download has an unknown field "${k}"`);
+  if (typeof d.url !== "string" || !/^https:\/\/[^\s]+$/.test(d.url)) fail(where, `download.url must be an https address: ${JSON.stringify(d.url)}`);
+  else {
+    if (/[?&](uuid|at|token|key|secret|sig|signature)=/i.test(d.url) || /s3host|:9000/i.test(d.url)) fail(where, "download.url must not carry a temporary token or storage keys");
+    if (!links.has(d.url)) links.set(d.url, []);
+    links.get(d.url).push(`${where} download.url`);
+  }
+  // where the author published it: proof that the author, not us, chose this link
+  if (typeof d.via !== "string" || !/^https:\/\/[^\s]+$/.test(d.via)) fail(where, "download.via must be the https address of the author's manifest that names this file");
+  if (d.size !== undefined && !(Number.isInteger(d.size) && d.size > 0)) fail(where, "download.size must be a whole number of bytes");
+  if (d.sha256 !== undefined && !/^[0-9a-f]{64}$/.test(d.sha256)) fail(where, "download.sha256 must be 64 hex characters");
+}
+
 function checkEntry(where, e, { needsName = true } = {}) {
   if (needsName && (typeof e.name !== "string" || !e.name.trim())) fail(where, "has no name");
   for (const f of ["page", "image", "discord", "news", "support", "network"]) {
@@ -43,8 +60,9 @@ function checkEntry(where, e, { needsName = true } = {}) {
     checkUrl(where, f, e[f]);
   }
   checkUrl(where, "colors.backgroundImage", e.colors?.backgroundImage);
+  checkDownload(where, e.download);
   for (const k of Object.keys(e)) {
-    if (/download|s3|secret|key|password|token/i.test(k)) fail(where, `field "${k}" must not be in the catalog`);
+    if (k !== "download" && /download|s3|secret|key|password|token/i.test(k)) fail(where, `field "${k}" must not be in the catalog`);
   }
 }
 

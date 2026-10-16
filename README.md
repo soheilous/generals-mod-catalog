@@ -13,11 +13,13 @@ An open list of mods for **Command & Conquer: Generals** and **Zero Hour**, and 
 ## The one rule: files come from their authors
 
 The catalog **points** to each mod's own page (ModDB, Nexus Mods, the author's site or GitHub). It does not host files and
-does not link to mirrors somebody else uploaded. That keeps downloads under the control of the people who made the mods, and
-means a link does not die because a third party stopped paying for a server.
+does not link to mirrors somebody else uploaded. That keeps downloads under the control of the people who made the mods.
 
-A direct download link is accepted only for helper programs in `tools.json`, only when it is published by their author, and
-always together with its SHA-256 so it can be verified.
+A **direct download** (`download`) is listed only when the author published it themselves, for launchers to use, in a
+GenLauncher manifest in their own repository. The entry says where (`via`), so anyone can check that the author chose the link.
+GenLauncher then offers a one-click install for that entry; every other entry opens the author's page instead. Authors can ask
+for a `download` to be removed at any time. `tools/import-manifests.mjs` reads the authors' manifests and keeps these links and
+the version numbers up to date; it keeps only links that really answer with a file.
 
 ## Format (version 1)
 
@@ -60,7 +62,7 @@ node tools/check-catalog.mjs              # also checks that the pages still exi
 ## Credits and license
 
 The first version of this catalog was converted from the mod list of GenLauncher 1.x by **p0ls3r**
-([p0ls3r/GenLauncherModsData](https://github.com/p0ls3r/GenLauncherModsData)); download links and storage details from that list
-were left out on purpose. Every mod listed belongs to its authors.
+([p0ls3r/GenLauncherModsData](https://github.com/p0ls3r/GenLauncherModsData)); the mod pages came from there, and direct links are taken only from the manifests the authors
+themselves published. Every mod listed belongs to its authors.
 
 [MIT](LICENSE). *Command & Conquer* and *Generals* are trademarks of Electronic Arts Inc.; this is an unofficial fan project.
