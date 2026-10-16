@@ -1,7 +1,7 @@
 {
   "format": 1,
   "game": "zh",
-  "updated": "2026-10-14",
+  "updated": "2026-10-16",
   "mods": [
     {
       "name": "Rise of the Reds",
@@ -81,7 +81,12 @@
           "name": "Vanilla Campaigns Remastered",
           "version": "1.871",
           "news": "https://docs.google.com/document/d/1NdmwfmHvc0PSfq5pi18LSctKQJzzPYf0/edit?usp=sharing&ouid=115439914228425694031&rtpof=true&sd=true",
-          "dependsOn": "Hanpatch"
+          "dependsOn": "Hanpatch",
+          "download": {
+            "url": "https://www.dropbox.com/scl/fi/fr2wdl9l7rvxfbqi32688/VCR-Vanilla-Campaigns-Remastered-Public-v.1.871.big?rlkey=6900m84vsmbmhdubgd8zdq4uv&st=fjx2todh&dl=1",
+            "via": "https://raw.githubusercontent.com/StanislavSaw/Vanilla-Campaigns-Remastered---Manifest-file/master/Vanilla-Campaigns-Remastered---Manifest-file.yaml",
+            "size": 117409126
+          }
         },
         {
           "name": "EPA No MechFactions",

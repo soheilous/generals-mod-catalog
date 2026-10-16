@@ -1,0 +1,38 @@
+name: Refresh from the authors
+
+# Once a week (and on demand) read the GenLauncher manifests the mod authors publish in their own repositories, update the
+# version numbers and direct download links in the catalog, and open a pull request when something changed. A person looks at
+# the pull request before it is merged. (Needs: Settings > Actions > General > "Allow GitHub Actions to create and approve
+# pull requests".)
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read the authors' manifests
+        run: node tools/import-manifests.mjs --write --prune | tee refresh.log
+      - name: The catalog must still be valid
+        run: node tools/check-catalog.mjs --offline
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: refresh-from-authors
+          commit-message: "Refresh versions and direct downloads from the authors' manifests"
+          title: "Refresh versions and direct downloads from the authors' manifests"
+          body: |
+            Automatic weekly refresh by `tools/import-manifests.mjs`. It reads the GenLauncher manifests that mod authors
+            publish in their own repositories and keeps only direct links that really answer with a file.
+
+            Check the diff: new `download` entries, changed versions, or a link removed because it stopped working.
+          delete-branch: true

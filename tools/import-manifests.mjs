@@ -135,8 +135,15 @@ await pool(manifests, 6, async (m) => {
 console.log(report.sort().join("\n"));
 console.log(`\n${added} added, ${same} unchanged, ${skipped} without a direct link, ${dead} stopped working`);
 if (write) {
-  for (const { f, data } of catalogs) fs.writeFileSync(path.join(dir, f), JSON.stringify(data, null, 2) + "\n");
-  console.log("catalog files written");
+  for (const { f, data } of catalogs) {
+    const file = path.join(dir, f);
+    const before = fs.readFileSync(file, "utf8");
+    const probe = JSON.stringify({ ...data, updated: JSON.parse(before).updated }, null, 2) + "\n";
+    if (probe === before.replace(/\r\n/g, "\n")) continue; // nothing changed in this file
+    data.updated = new Date().toISOString().slice(0, 10);
+    fs.writeFileSync(file, JSON.stringify(data, null, 2) + "\n");
+    console.log(f + " written");
+  }
 } else {
   console.log("(dry run: use --write to change the files)");
 }
