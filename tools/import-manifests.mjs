@@ -132,6 +132,34 @@ await pool(manifests, 6, async (m) => {
   }
 });
 
+// ---- entries that name a project's releases instead of a manifest: download.asset is a pattern such as "game-weekly-*.zip" and
+// download.via the project's "latest release" address on api.github.com. The newest matching file becomes url (and version, size).
+const globRe = (g) => new RegExp("^" + g.split("*").map((x) => x.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*") + "$");
+const withAsset = catalogs
+  .flatMap(({ data }) => [...data.mods.flatMap((m) => [m, ...(m.patches ?? []), ...(m.addons ?? [])]), ...(data.executables ?? [])])
+  .filter((e) => e.download?.asset);
+await pool(withAsset, 3, async (e) => {
+  const via = e.download.via;
+  if (!/^https:\/\/api\.github\.com\/repos\/[\w.-]+\/[\w.-]+\/releases\/latest$/.test(via ?? "")) {
+    report.push(`release source? ${e.name}: via must be a GitHub "releases/latest" API address`);
+    return;
+  }
+  try {
+    const r = await fetch(via, { headers: UA, signal: AbortSignal.timeout(20000) });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const rel = await r.json();
+    const asset = (rel.assets ?? []).find((a) => globRe(e.download.asset).test(a.name));
+    if (!asset) throw new Error(`no file matches ${e.download.asset} in ${rel.tag_name}`);
+    const before = e.download.url;
+    e.download.url = asset.browser_download_url;
+    if (asset.size) e.download.size = asset.size;
+    e.version = rel.tag_name;
+    if (before !== e.download.url) { added++; report.push(`release link    ${e.name} ${rel.tag_name}  ${asset.browser_download_url}`); } else same++;
+  } catch (err) {
+    report.push(`RELEASE FAILED  ${e.name}: ${err.message}`);
+  }
+});
+
 console.log(report.sort().join("\n"));
 console.log(`\n${added} added, ${same} unchanged, ${skipped} without a direct link, ${dead} stopped working`);
 if (write) {

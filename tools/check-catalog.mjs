@@ -40,7 +40,7 @@ function checkUrlRaw(where, field, value) {
 function checkDownload(where, d) {
   if (d === undefined) return;
   if (typeof d !== "object" || d === null || Array.isArray(d)) return fail(where, "download must be an object { url, via }");
-  for (const k of Object.keys(d)) if (!["url", "via", "size", "sha256"].includes(k)) fail(where, `download has an unknown field "${k}"`);
+  for (const k of Object.keys(d)) if (!["url", "via", "size", "sha256", "asset"].includes(k)) fail(where, `download has an unknown field "${k}"`);
   if (typeof d.url !== "string" || !/^https:\/\/[^\s]+$/.test(d.url)) fail(where, `download.url must be an https address: ${JSON.stringify(d.url)}`);
   else {
     if (/[?&](uuid|at|token|key|secret|sig|signature)=/i.test(d.url) || /s3host|:9000/i.test(d.url)) fail(where, "download.url must not carry a temporary token or storage keys");
@@ -50,6 +50,7 @@ function checkDownload(where, d) {
   // where the author published it: proof that the author, not us, chose this link
   if (typeof d.via !== "string" || !/^https:\/\/[^\s]+$/.test(d.via)) fail(where, "download.via must be the https address of the author's manifest that names this file");
   if (d.size !== undefined && !(Number.isInteger(d.size) && d.size > 0)) fail(where, "download.size must be a whole number of bytes");
+  if (d.asset !== undefined && (typeof d.asset !== "string" || !d.asset.includes("*"))) fail(where, 'download.asset must be a file name pattern with a "*", such as "game-weekly-*.zip"');
   if (d.sha256 !== undefined && !/^[0-9a-f]{64}$/.test(d.sha256)) fail(where, "download.sha256 must be 64 hex characters");
 }
 
