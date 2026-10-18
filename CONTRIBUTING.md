@@ -40,3 +40,10 @@ name and what is wrong. Authors can ask for their entry to be changed or removed
 ## License
 
 By contributing you agree that your contribution is released under the [MIT license](LICENSE).
+
+### Maps and map packs
+
+`"maps": [ { "name": "…", "author": "…", "description": "…", "page": "https://…", "image": "https://…", "download": { "url": "…", "via": "…" } } ]`
+at the top level of `zero-hour.json` lists custom maps and map packs for the launcher's Maps section of Discover. As for mods, a
+`download` is only for a link the author published themselves (a zip, 7z or rar with the maps in it, in any folder layout: the
+launcher puts each map where the game looks); everything else is a `page` to get it from.

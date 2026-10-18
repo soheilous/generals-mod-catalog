@@ -97,6 +97,20 @@ for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".json") && !["a
   if (idx.format !== 1) fail(file, `format should be 1, it is ${idx.format}`);
   if (!["zh", "generals"].includes(idx.game)) fail(file, `game should be "zh" or "generals"`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(idx.updated ?? "")) fail(file, "updated should be YYYY-MM-DD");
+  // custom maps (and map packs) for the Maps page: { name, author?, description?, page?, image?, download? }
+  const mapNames = new Set();
+  for (const m of idx.maps ?? []) {
+    const at = `${file} > map "${m?.name}"`;
+    if (typeof m?.name !== "string" || !m.name.trim()) { fail(file, "a map has no name"); continue; }
+    for (const k of Object.keys(m)) if (!["name", "author", "description", "page", "image", "download"].includes(k)) fail(at, `unknown field "${k}"`);
+    if (mapNames.has(m.name.toLowerCase())) fail(at, "listed twice");
+    mapNames.add(m.name.toLowerCase());
+    if (!m.page && !m.download) fail(at, "needs a page or a download");
+    checkUrl(at, "page", m.page);
+    checkUrl(at, "image", m.image);
+    checkDownload(at, m.download);
+  }
+
   const names = new Set();
   for (const m of idx.mods ?? []) {
     const where = `${file} > ${m.name}`;
