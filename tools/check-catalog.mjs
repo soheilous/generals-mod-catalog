@@ -109,7 +109,7 @@ for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".json") && !["a
     checkUrl(at, "page", m.page);
     checkUrl(at, "image", m.image);
     checkDownload(at, m.download);
-    if (m.subfolder !== undefined && (typeof m.subfolder !== "string" || /(^|[\/])..([\/]|$)|^[\/]/.test(m.subfolder))) fail(at, "subfolder must be a folder path inside the archive");
+    if (m.subfolder !== undefined && (typeof m.subfolder !== "string" || m.subfolder.split(/[\\/]/).includes("..") || /^[\\/]/.test(m.subfolder))) fail(at, "subfolder must be a folder path inside the archive");
   }
 
   const names = new Set();
