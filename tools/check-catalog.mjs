@@ -40,7 +40,7 @@ function checkUrlRaw(where, field, value) {
 function checkDownload(where, d) {
   if (d === undefined) return;
   if (typeof d !== "object" || d === null || Array.isArray(d)) return fail(where, "download must be an object { url, via }");
-  for (const k of Object.keys(d)) if (!["url", "via", "size", "sha256", "asset"].includes(k)) fail(where, `download has an unknown field "${k}"`);
+  for (const k of Object.keys(d)) if (!["url", "via", "size", "sha256", "asset", "history"].includes(k)) fail(where, `download has an unknown field "${k}"`);
   if (typeof d.url !== "string" || !/^https:\/\/[^\s]+$/.test(d.url)) fail(where, `download.url must be an https address: ${JSON.stringify(d.url)}`);
   else {
     if (/[?&](uuid|at|token|key|secret|sig|signature)=/i.test(d.url) || /s3host|:9000/i.test(d.url)) fail(where, "download.url must not carry a temporary token or storage keys");
@@ -54,6 +54,24 @@ function checkDownload(where, d) {
   if (d.sha256 !== undefined && !/^[0-9a-f]{64}$/.test(d.sha256)) fail(where, "download.sha256 must be 64 hex characters");
 }
 
+/** Other versions than the newest: [{ version, page?, image?, download?, date? }]. */
+function checkVersions(where, e) {
+  if (e.versions === undefined) return;
+  if (!Array.isArray(e.versions)) return fail(where, "versions must be a list");
+  const seen = new Set([String(e.version ?? "").toLowerCase()]);
+  for (const v of e.versions) {
+    const at = `${where} > version ${v?.version}`;
+    if (typeof v?.version !== "string" || !v.version.trim()) { fail(where, "a version has no name"); continue; }
+    for (const k of Object.keys(v)) if (!["version", "page", "image", "download", "date"].includes(k)) fail(at, `unknown field "${k}"`);
+    if (seen.has(v.version.toLowerCase())) fail(at, "listed twice (or the same as the newest version)");
+    seen.add(v.version.toLowerCase());
+    checkUrl(at, "page", v.page);
+    checkUrl(at, "image", v.image);
+    checkDownload(at, v.download);
+    if (v.date !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(v.date)) fail(at, "date must look like 2026-10-16");
+  }
+}
+
 function checkEntry(where, e, { needsName = true } = {}) {
   if (needsName && (typeof e.name !== "string" || !e.name.trim())) fail(where, "has no name");
   for (const f of ["page", "image", "discord", "news", "support", "network"]) {
@@ -62,6 +80,7 @@ function checkEntry(where, e, { needsName = true } = {}) {
   }
   checkUrl(where, "colors.backgroundImage", e.colors?.backgroundImage);
   checkDownload(where, e.download);
+  checkVersions(where, e);
   for (const k of Object.keys(e)) {
     if (k !== "download" && /download|s3|secret|key|password|token/i.test(k)) fail(where, `field "${k}" must not be in the catalog`);
   }

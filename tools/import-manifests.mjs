@@ -29,9 +29,16 @@ const UA = { "user-agent": "generals-mod-catalog-tools (+https://github.com/sohe
 const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 async function getText(url) {
-  const r = await fetch(url, { headers: UA, signal: AbortSignal.timeout(20000) });
-  if (!r.ok) throw new Error("HTTP " + r.status);
-  return r.text();
+  // GitHub and the authors' hosts are sometimes slow: try three times
+  let last;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const r = await fetch(url, { headers: UA, signal: AbortSignal.timeout(20000) });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return await r.text();
+    } catch (e) { last = e; }
+  }
+  throw last;
 }
 
 /** Every manifest address the old lists mention. */
@@ -154,6 +161,23 @@ await pool(withAsset, 3, async (e) => {
     e.download.url = asset.browser_download_url;
     if (asset.size) e.download.size = asset.size;
     e.version = rel.tag_name;
+    // download.history: also list the previous releases as versions the user can go back to
+    const keep = Number.isInteger(e.download.history) ? e.download.history : 0;
+    if (keep > 0) {
+      const listUrl = via.replace(/\/releases\/latest$/, `/releases?per_page=${keep + 3}`);
+      const lr = await fetch(listUrl, { headers: UA, signal: AbortSignal.timeout(20000) });
+      if (lr.ok) {
+        const older = [];
+        for (const o of await lr.json()) {
+          if (o.draft || o.tag_name === rel.tag_name) continue;
+          const a = (o.assets ?? []).find((x) => globRe(e.download.asset).test(x.name));
+          if (!a) continue;
+          older.push({ version: o.tag_name, page: o.html_url, date: (o.published_at ?? "").slice(0, 10) || undefined, download: { url: a.browser_download_url, via: listUrl, size: a.size } });
+          if (older.length >= keep) break;
+        }
+        e.versions = older;
+      }
+    }
     if (before !== e.download.url) { added++; report.push(`release link    ${e.name} ${rel.tag_name}  ${asset.browser_download_url}`); } else same++;
   } catch (err) {
     report.push(`RELEASE FAILED  ${e.name}: ${err.message}`);
