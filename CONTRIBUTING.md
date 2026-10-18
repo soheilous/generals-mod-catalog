@@ -11,6 +11,14 @@ Thank you for helping keep Generals modding easy to find. Most changes are a few
 4. Update `updated` at the top of the file.
 5. Run `node tools/check-catalog.mjs --offline` and open a pull request.
 
+### Other versions
+
+`"versions": [ { "version": "6.26", "page": "https://…", "image": "https://…", "download": { "url": "…", "via": "…" }, "date": "2026-05-01" } ]`
+lists versions besides the newest one (the entry itself is the newest). Each can have its own page, picture (the launcher shows it
+when that version is selected), direct download and release date. For a project that publishes GitHub releases, a `download`
+with `asset` (a file name pattern), `via` (its `releases/latest` API address) and `history` (how many older releases to list)
+lets `tools/import-manifests.mjs` fill all of this in by itself.
+
 ### Direct downloads
 
 `"download": { "url": "https://…/Mod.zip", "via": "https://…/manifest", "size": 12345, "sha256": "…" }` makes GenLauncher offer a
