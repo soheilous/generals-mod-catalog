@@ -978,22 +978,13 @@
     {
       "name": "Ranked maps",
       "author": "TheSuperHackers",
-      "description": "The Zero Hour ranked multiplayer maps (1v1 to 4v4, and a fun set), kept by the community patch team. Fair layouts, working AI on every spawn point.",
+      "description": "The Zero Hour ranked multiplayer maps (1v1 to 4v4, and a fun set) kept by the community patch team, about 280 maps. Fair layouts, working AI on every spawn point.",
       "page": "https://github.com/TheSuperHackers/GeneralsRankedMaps",
       "download": {
         "url": "https://github.com/TheSuperHackers/GeneralsRankedMaps/archive/refs/heads/main.zip",
         "via": "https://github.com/TheSuperHackers/GeneralsRankedMaps"
-      }
-    },
-    {
-      "name": "Super Patch maps",
-      "author": "TheSuperHackers",
-      "description": "Fixed and polished campaign, challenge and multiplayer maps that the Super Patch inherited.",
-      "page": "https://github.com/TheSuperHackers/GeneralsSuperMapsZH",
-      "download": {
-        "url": "https://github.com/TheSuperHackers/GeneralsSuperMapsZH/archive/refs/heads/main.zip",
-        "via": "https://github.com/TheSuperHackers/GeneralsSuperMapsZH"
-      }
+      },
+      "subfolder": "release"
     },
     {
       "name": "C&C Epic Showdown 707 mappack",

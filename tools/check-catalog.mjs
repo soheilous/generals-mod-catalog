@@ -102,13 +102,14 @@ for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".json") && !["a
   for (const m of idx.maps ?? []) {
     const at = `${file} > map "${m?.name}"`;
     if (typeof m?.name !== "string" || !m.name.trim()) { fail(file, "a map has no name"); continue; }
-    for (const k of Object.keys(m)) if (!["name", "author", "description", "page", "image", "download"].includes(k)) fail(at, `unknown field "${k}"`);
+    for (const k of Object.keys(m)) if (!["name", "author", "description", "page", "image", "download", "subfolder"].includes(k)) fail(at, `unknown field "${k}"`);
     if (mapNames.has(m.name.toLowerCase())) fail(at, "listed twice");
     mapNames.add(m.name.toLowerCase());
     if (!m.page && !m.download) fail(at, "needs a page or a download");
     checkUrl(at, "page", m.page);
     checkUrl(at, "image", m.image);
     checkDownload(at, m.download);
+    if (m.subfolder !== undefined && (typeof m.subfolder !== "string" || /(^|[\/])..([\/]|$)|^[\/]/.test(m.subfolder))) fail(at, "subfolder must be a folder path inside the archive");
   }
 
   const names = new Set();

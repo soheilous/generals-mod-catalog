@@ -47,3 +47,6 @@ By contributing you agree that your contribution is released under the [MIT lice
 at the top level of `zero-hour.json` lists custom maps and map packs for the launcher's Maps section of Discover. As for mods, a
 `download` is only for a link the author published themselves (a zip, 7z or rar with the maps in it, in any folder layout: the
 launcher puts each map where the game looks); everything else is a `page` to get it from.
+
+For a project whose archive holds more than the maps (a repository's zip with documents and unfinished maps), `subfolder` names the folder
+inside the archive that holds the maps to add (`"subfolder": "release"`); the archive's single top folder, as in a GitHub zip, is skipped.
