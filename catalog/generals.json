@@ -1,7 +1,7 @@
 {
   "format": 1,
   "game": "generals",
-  "updated": "2026-10-18",
+  "updated": "2026-10-26",
   "mods": [
     {
       "name": "Project Tomahawk Storm",
@@ -51,12 +51,22 @@
       "download": {
         "asset": "generals-weekly-*.zip",
         "via": "https://api.github.com/repos/TheSuperHackers/GeneralsGameCode/releases/latest",
-        "url": "https://github.com/TheSuperHackers/GeneralsGameCode/releases/download/weekly-2026-10-16/generals-weekly-2026-10-16.zip",
-        "size": 31987764,
+        "url": "https://github.com/TheSuperHackers/GeneralsGameCode/releases/download/weekly-2026-10-23/generals-weekly-2026-10-23.zip",
+        "size": 31578880,
         "history": 6
       },
-      "version": "weekly-2026-10-16",
+      "version": "weekly-2026-10-23",
       "versions": [
+        {
+          "version": "weekly-2026-10-16",
+          "page": "https://github.com/TheSuperHackers/GeneralsGameCode/releases/tag/weekly-2026-10-16",
+          "date": "2026-10-16",
+          "download": {
+            "url": "https://github.com/TheSuperHackers/GeneralsGameCode/releases/download/weekly-2026-10-16/generals-weekly-2026-10-16.zip",
+            "via": "https://api.github.com/repos/TheSuperHackers/GeneralsGameCode/releases?per_page=9",
+            "size": 31987764
+          }
+        },
         {
           "version": "weekly-2026-10-09",
           "page": "https://github.com/TheSuperHackers/GeneralsGameCode/releases/tag/weekly-2026-10-09",
@@ -105,16 +115,6 @@
             "url": "https://github.com/TheSuperHackers/GeneralsGameCode/releases/download/weekly-2026-09-12/generals-weekly-2026-09-12.zip",
             "via": "https://api.github.com/repos/TheSuperHackers/GeneralsGameCode/releases?per_page=9",
             "size": 31696082
-          }
-        },
-        {
-          "version": "weekly-2026-09-05",
-          "page": "https://github.com/TheSuperHackers/GeneralsGameCode/releases/tag/weekly-2026-09-05",
-          "date": "2026-09-05",
-          "download": {
-            "url": "https://github.com/TheSuperHackers/GeneralsGameCode/releases/download/weekly-2026-09-05/generals-weekly-2026-09-05.zip",
-            "via": "https://api.github.com/repos/TheSuperHackers/GeneralsGameCode/releases?per_page=9",
-            "size": 31644076
           }
         }
       ]
